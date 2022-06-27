@@ -1,7 +1,6 @@
-// Exp: Carga las variables de entorno
+// Load env variables
 require("dotenv").config();
-//Exp: Crea una nueva instancia del servidor de express
+// Import and create new instanceof server
 const Server = require("./models/server");
-
 const server = new Server();
 server.listen();
