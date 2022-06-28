@@ -7,6 +7,7 @@ class Server {
 		this.app = express();
 		this.port = process.env.PORT;
 		this.usersPath = "/api/user";
+		this.productPath = "/api/product";
 		//Middleware
 		this.middlewares();
 		this.routes();
@@ -19,6 +20,7 @@ class Server {
 	}
 	routes() {
 		this.app.use(this.usersPath, require("../routes/user"));
+		this.app.use(this.productPath, require("../routes/product"));
 	}
 
 	listen() {
