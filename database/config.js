@@ -7,6 +7,10 @@ const datastore = new Datastore({
 	keyFilename: "./google_keys.json",
 });
 
+function getKey(kind, id) {
+	return datastore.key([kind, id]);
+}
+
 async function addEntity(kind, name, objectToAdd) {
 	// The Cloud Datastore key for the new entity
 	const taskKey = datastore.key([kind, name]);
@@ -21,6 +25,18 @@ async function addEntity(kind, name, objectToAdd) {
 
 	// Saves the entity
 	await datastore.save(task);
+}
+
+async function getEntity(kind, id) {
+	console.log(kind, id);
+	const transaction = datastore.transaction();
+	const taskKey = datastore.key([kind, id]);
+	try {
+		const [task] = await transaction.get(taskKey);
+		return task;
+	} catch (err) {
+		throw err;
+	}
 }
 
 async function getAllEntries(kind, start = 0, limit = 100) {
@@ -52,7 +68,6 @@ async function updateEntity(kind, id, changes) {
 async function deleteEntity(kind, id) {
 	try {
 		const taskKey = datastore.key([kind, id]);
-		console.log(datastore.key);
 		await datastore.delete(taskKey);
 	} catch (err) {
 		throw err;
@@ -60,6 +75,8 @@ async function deleteEntity(kind, id) {
 }
 
 module.exports = {
+	getKey,
+	getEntity,
 	addEntity,
 	getAllEntries,
 	updateEntity,
