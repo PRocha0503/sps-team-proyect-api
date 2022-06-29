@@ -2,6 +2,7 @@ const { response } = require("express");
 const { Product } = require("../models/product");
 const {
 	addEntity,
+	getEntity,
 	getAllEntries,
 	deleteEntity,
 	updateEntity,
@@ -35,6 +36,20 @@ const addProduct = async (req, res = response) => {
 	}
 };
 
+const getProduct = async (req, res = response) => {
+	try {
+		const { name } = req.body;
+		const product = await getEntity("Product", name);
+		res.status(201).json({
+			...product,
+		});
+	} catch (err) {
+		res.status(401).json({
+			msg: `Error getting product ${err}`,
+		});
+	}
+};
+
 const getAllProducts = async (req, res = response) => {
 	try {
 		const products = await getAllEntries("Product");
@@ -49,6 +64,7 @@ const getAllProducts = async (req, res = response) => {
 };
 
 const deleteProduct = async (req, res = response) => {
+	//TODO: delete corresponding coupons
 	try {
 		const { name } = req.params;
 		await deleteEntity("Product", name);
@@ -63,6 +79,7 @@ const deleteProduct = async (req, res = response) => {
 };
 
 const updateProduct = async (req, res = response) => {
+	console.log("HERE");
 	try {
 		const { name } = req.params;
 		const changes = req.body;
@@ -80,6 +97,7 @@ const updateProduct = async (req, res = response) => {
 module.exports = {
 	healthy,
 	addProduct,
+	getProduct,
 	getAllProducts,
 	deleteProduct,
 	updateProduct,

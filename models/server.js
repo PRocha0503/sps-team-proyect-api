@@ -6,8 +6,11 @@ class Server {
 	constructor() {
 		this.app = express();
 		this.port = process.env.PORT;
-		this.usersPath = "/api/user";
-		this.productPath = "/api/product";
+		this.paths = {
+			usersPath: "/api/users",
+			productPath: "/api/products",
+			couponPath: "/api/coupons",
+		};
 		//Middleware
 		this.middlewares();
 		this.routes();
@@ -19,8 +22,9 @@ class Server {
 		this.app.use(express.static("public"));
 	}
 	routes() {
-		this.app.use(this.usersPath, require("../routes/user"));
-		this.app.use(this.productPath, require("../routes/product"));
+		this.app.use(this.paths.usersPath, require("../routes/user"));
+		this.app.use(this.paths.productPath, require("../routes/product"));
+		this.app.use(this.paths.couponPath, require("../routes/coupon"));
 	}
 
 	listen() {
