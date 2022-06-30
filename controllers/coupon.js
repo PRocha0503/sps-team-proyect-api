@@ -20,15 +20,15 @@ const addCoupon = async (req, res = response) => {
 	try {
 		const { item, percentage } = req.body;
 		const product = await getEntity("Product", item);
-		console.log(product);
 		if (!product) {
 			throw new Error("Product not found");
 		}
+		const productKey = getKey("Product", item);
 		const [code] = voucher_codes.generate({
 			length: 8,
 			count: 1,
 		});
-		const coupon = new Coupon(code, item, percentage);
+		const coupon = new Coupon(code, productKey, percentage);
 		await addEntity("Coupon", coupon.code, coupon);
 		res.status(201).json({
 			msg: `Coupon for ${coupon.item} added successfully`,
