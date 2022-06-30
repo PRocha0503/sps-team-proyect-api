@@ -45,6 +45,12 @@ async function getAllEntries(kind, start = 0, limit = 100) {
 	return tasks;
 }
 
+async function getOwnerProducts(owner_name) {
+	const query = datastore.createQuery("Product").filter("owner", "=", owner_name);
+	const [tasks] = await datastore.runQuery(query)
+	return tasks;
+}
+
 async function updateEntity(kind, id, changes) {
 	const transaction = datastore.transaction();
 	const taskKey = datastore.key([kind, id]);
@@ -83,4 +89,5 @@ module.exports = {
 	getAllEntries,
 	updateEntity,
 	deleteEntity,
+	getOwnerProducts,
 };
