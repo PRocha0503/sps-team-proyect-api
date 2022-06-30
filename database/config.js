@@ -48,9 +48,11 @@ async function getAllEntries(kind, start = 0, limit = 100) {
 async function updateEntity(kind, id, changes) {
 	const transaction = datastore.transaction();
 	const taskKey = datastore.key([kind, id]);
+	console.log(taskKey);
 	try {
 		await transaction.run();
 		const [task] = await transaction.get(taskKey);
+		console.log(task);
 		for (let change in changes) {
 			task[change] = changes[change];
 		}

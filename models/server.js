@@ -10,6 +10,7 @@ class Server {
 			usersPath: "/api/users",
 			productPath: "/api/products",
 			couponPath: "/api/coupons",
+			orderPath: "/api/orders",
 		};
 		//Middleware
 		this.middlewares();
@@ -25,6 +26,7 @@ class Server {
 		this.app.use(this.paths.usersPath, require("../routes/user"));
 		this.app.use(this.paths.productPath, require("../routes/product"));
 		this.app.use(this.paths.couponPath, require("../routes/coupon"));
+		this.app.use(this.paths.orderPath, require("../routes/order"));
 	}
 
 	listen() {
