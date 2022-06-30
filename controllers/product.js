@@ -6,6 +6,7 @@ const {
 	getAllEntries,
 	deleteEntity,
 	updateEntity,
+	getOwnerProducts
 } = require("../database/config");
 
 const healthy = (req, res = response) => {
@@ -94,6 +95,20 @@ const updateProduct = async (req, res = response) => {
 	}
 };
 
+const getOwnerProduct = async (req, res = response) => {
+	try {
+		const { owner_name } = req.query;
+		const owner_products = await getOwnerProducts(owner_name);
+		res.status(201).json({
+			...owner_products,
+		});
+	} catch (err) {
+		res.status(401).json({
+			msg: `Error getting product ${err}`,
+		});
+	}
+};
+
 module.exports = {
 	healthy,
 	addProduct,
@@ -101,4 +116,5 @@ module.exports = {
 	getAllProducts,
 	deleteProduct,
 	updateProduct,
+	getOwnerProduct,
 };
