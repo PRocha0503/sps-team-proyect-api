@@ -7,6 +7,7 @@ const {
 	getEntity,
 	getAllEntries,
 	deleteEntity,
+	getWithFilter,
 	updateEntity,
 } = require("../database/config");
 
@@ -76,6 +77,33 @@ const getAllOrders = async (req, res = response) => {
 		});
 	}
 };
+
+const getUserOrders = async (req, res = response) => {
+	try {
+		const { user } = req.params;
+		const key = await getKey("User", user);
+		const orders = await getWithFilter("Order", "user", key);
+		const final = [];
+		for (const order of orders) {
+			const product = await getEntity("Product", order.product.name);
+			const sample = {
+				...order,
+				product: {
+					...product,
+				},
+			};
+			final.push(sample);
+		}
+		res.status(201).json({
+			...final,
+		});
+	} catch (err) {
+		res.status(401).json({
+			msg: `Error getting orders ${err}`,
+		});
+	}
+};
+
 //TODO delete order
 // const deleteCoupon = async (req, res = response) => {
 // 	try {
@@ -119,4 +147,5 @@ module.exports = {
 	addOrder,
 	getAllOrders,
 	updateOrder,
+	getUserOrders,
 };
