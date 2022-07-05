@@ -8,6 +8,7 @@ const {
 	getAllEntries,
 	deleteEntity,
 	updateEntity,
+	getWithFilter,
 } = require("../database/config");
 
 const healthy = (req, res = response) => {
@@ -18,7 +19,7 @@ const healthy = (req, res = response) => {
 
 const addCoupon = async (req, res = response) => {
 	try {
-		const { item, percentage } = req.body;
+		const { item, percentage, owner } = req.body;
 		const product = await getEntity("Product", item);
 		if (!product) {
 			throw new Error("Product not found");
@@ -28,7 +29,7 @@ const addCoupon = async (req, res = response) => {
 			length: 8,
 			count: 1,
 		});
-		const coupon = new Coupon(code, productKey, percentage);
+		const coupon = new Coupon(code, productKey, percentage, owner);
 		await addEntity("Coupon", coupon.code, coupon);
 		res.status(201).json({
 			msg: `Coupon for ${coupon.item} added successfully`,
@@ -53,6 +54,20 @@ const getCoupon = async (req, res = response) => {
 		});
 	}
 };
+
+const getCouponByOwner = async (req, res = response) => {
+	try {
+		const { owner } = req.query;
+		const coupons = await getWithFilter("Coupon", "owner", owner);
+		res.status(201).json({
+			...coupons,
+		});
+	} catch (err) {
+		res.status(401).json({
+			msg: `Error getting coupon ${err}`,
+		});
+	}
+}
 
 const getAllCoupons = async (req, res = response) => {
 	try {
@@ -103,4 +118,5 @@ module.exports = {
 	getCoupon,
 	deleteCoupon,
 	updateCoupon,
+	getCouponByOwner
 };
