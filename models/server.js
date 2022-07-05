@@ -11,6 +11,7 @@ class Server {
 			productPath: "/api/products",
 			couponPath: "/api/coupons",
 			orderPath: "/api/orders",
+			authPath: "/api/auth",
 		};
 		//Middleware
 		this.middlewares();
@@ -27,6 +28,7 @@ class Server {
 		this.app.use(this.paths.productPath, require("../routes/product"));
 		this.app.use(this.paths.couponPath, require("../routes/coupon"));
 		this.app.use(this.paths.orderPath, require("../routes/order"));
+		this.app.use(this.paths.authPath, require("../routes/auth"));
 	}
 
 	listen() {
