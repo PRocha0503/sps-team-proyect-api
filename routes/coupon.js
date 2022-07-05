@@ -6,6 +6,7 @@ const {
 	getCoupon,
 	deleteCoupon,
 	updateCoupon,
+	getCouponByOwner
 } = require("../controllers/coupon");
 
 const router = Router();
@@ -16,5 +17,6 @@ router.post("/", addCoupon);
 router.get("/", getCoupon);
 router.delete("/:code", deleteCoupon);
 router.put("/:code", updateCoupon);
+router.get("/:owner", getCouponByOwner)
 
 module.exports = router;
