@@ -15,8 +15,9 @@ const { createJWT } = require("../helpers/createJWT");
 
 const login = async (req, res = response) => {
 	const { username, password } = req.body;
-	const user = await getEntity("User", username);
+	console.log(req.body);
 	try {
+		const user = await getEntity("User", username);
 		const validPassword = bcryptjs.compareSync(password, user.password);
 		if (!validPassword) {
 			return res
