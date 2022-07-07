@@ -28,11 +28,19 @@ async function addEntity(kind, name, objectToAdd) {
 }
 
 async function getEntity(kind, id) {
-	console.log(kind, id);
 	const transaction = datastore.transaction();
 	const taskKey = datastore.key([kind, id]);
 	try {
 		const [task] = await transaction.get(taskKey);
+		return task;
+	} catch (err) {
+		throw err;
+	}
+}
+async function getEntityByKey(key) {
+	const transaction = datastore.transaction();
+	try {
+		const [task] = await transaction.get(key);
 		return task;
 	} catch (err) {
 		throw err;
@@ -85,6 +93,7 @@ async function deleteEntity(kind, id) {
 module.exports = {
 	getKey,
 	getEntity,
+	getEntityByKey,
 	addEntity,
 	getWithFilter,
 	getAllEntries,

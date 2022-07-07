@@ -1,5 +1,8 @@
 const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
+
+const { getEntityByKey, getEntity } = require("../database/config");
+
 const validateJWT = async (req = request, res = response, next) => {
 	const token = req.header("x-token");
 	if (!token) {
@@ -8,8 +11,8 @@ const validateJWT = async (req = request, res = response, next) => {
 		});
 	}
 	try {
-		const { username } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-		const user = await getEntity("User", username);
+		const userKey = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+		const user = await getEntityByKey(userKey.username);
 		if (!user) {
 			return res.status(401).json({
 				msg: "INVALID TOKEN",

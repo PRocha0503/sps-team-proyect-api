@@ -19,7 +19,8 @@ const healthy = (req, res = response) => {
 
 const addOrder = async (req, res = response) => {
 	try {
-		const { username, productName, code } = req.body;
+		const { username } = req.user;
+		const { productName, code } = req.body;
 		const isProduct = await getEntity("Product", productName);
 		const isUser = await getEntity("User", username);
 		const coupon = await getEntity("Coupon", code);
@@ -80,8 +81,8 @@ const getAllOrders = async (req, res = response) => {
 
 const getUserOrders = async (req, res = response) => {
 	try {
-		const { user } = req.params;
-		const key = await getKey("User", user);
+		const { username } = req.user;
+		const key = await getKey("User", username);
 		const orders = await getWithFilter("Order", "user", key);
 		const final = [];
 		for (const order of orders) {

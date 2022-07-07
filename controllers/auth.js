@@ -18,15 +18,15 @@ const login = async (req, res = response) => {
 	console.log(req.body);
 	try {
 		const user = await getEntity("User", username);
+		const userKey = getKey("User", username);
 		const validPassword = bcryptjs.compareSync(password, user.password);
 		if (!validPassword) {
 			return res
 				.status(400)
 				.json({ msg: "Invalid User/Password --incorrect password" });
 		}
-		const token = await createJWT(username);
+		const token = await createJWT(userKey);
 		res.json({
-			user,
 			token,
 		});
 	} catch (e) {
@@ -35,6 +35,11 @@ const login = async (req, res = response) => {
 			msg: "Talk to admin",
 		});
 	}
+};
+
+const getUserInfo = async (req, res = response) => {
+	const user = req.user;
+	return res.status(200).json(user);
 };
 
 const signup = async (req, res = response) => {
@@ -61,4 +66,5 @@ const signup = async (req, res = response) => {
 module.exports = {
 	login,
 	signup,
+	getUserInfo,
 };

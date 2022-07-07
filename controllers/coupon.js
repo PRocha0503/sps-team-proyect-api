@@ -67,7 +67,7 @@ const getCouponByOwner = async (req, res = response) => {
 			msg: `Error getting coupon ${err}`,
 		});
 	}
-}
+};
 
 const getAllCoupons = async (req, res = response) => {
 	try {
@@ -118,5 +118,5 @@ module.exports = {
 	getCoupon,
 	deleteCoupon,
 	updateCoupon,
-	getCouponByOwner
+	getCouponByOwner,
 };
