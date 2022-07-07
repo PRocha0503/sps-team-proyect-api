@@ -6,7 +6,7 @@ const {
 	getAllEntries,
 	deleteEntity,
 	updateEntity,
-	getWithFilter
+	getWithFilter,
 } = require("../database/config");
 
 const healthy = (req, res = response) => {
@@ -80,7 +80,6 @@ const deleteProduct = async (req, res = response) => {
 };
 
 const updateProduct = async (req, res = response) => {
-	console.log("HERE");
 	try {
 		const { name } = req.params;
 		const changes = req.body;
