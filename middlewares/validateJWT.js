@@ -12,6 +12,9 @@ const validateJWT = async (req = request, res = response, next) => {
 	}
 	try {
 		const userKey = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+		// console.log("HERE");
+		// console.log(userKey);
+		// console.log(userKey.username);
 		const user = await getEntityByKey(userKey.username);
 		if (!user) {
 			return res.status(401).json({
