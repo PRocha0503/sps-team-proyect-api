@@ -1,3 +1,7 @@
+const {
+	getEntity,
+} = require("../database/config");
+
 /**
  * @class Business
  * @description Defines the Business model for the API
@@ -14,7 +18,7 @@ class Business {
    * @param {String} phone 
    */
 	constructor(username, name, password, businessType, phone) {
-		this.username = username;
+    this.username = username;
 		this.password = password;
 		this.businessType = businessType;
     this.phone = phone;
@@ -35,7 +39,7 @@ class Business {
    * @throws {Error}
    * @memberof Business
   */
-  checkSanity() {
+  async checkSanity() {
     let usernameRegex = /^[a-zA-Z]+.*$/;
     let nameRegex = /^([a-zA-Z]+(\s)*)+[0-9]*$/;
     let phoneRegex = [
@@ -43,7 +47,7 @@ class Business {
       /^[0-9]{3}-[0-9]{7}$/
     ];
 
-
+    // Data Sanitization
     if (!(this.username && this.password && this.businessType && this.phone && this.name)) {
       throw new Error("Business is not valid");
     }
@@ -58,6 +62,12 @@ class Business {
     }
     if (!phoneRegex[0].test(this.phone) || phoneRegex[1].test(this.phone)) {
       throw new Error("Phone must be valid");
+    }
+
+    // Find if the business already exists, avoiding data duplicity
+    const business = await getEntity("Business", this.username);
+    if (business) {
+      throw new Error("Business already exists");
     }
 
     return true;

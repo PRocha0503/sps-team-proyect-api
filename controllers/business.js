@@ -3,8 +3,6 @@ const { Business } = require("../models/business");
 const {
 	addEntity,
 	getEntity,
-	getAllEntries,
-	deleteEntity,
 	updateEntity,
 	getWithFilter,
 } = require("../database/config");
@@ -14,8 +12,6 @@ const healthy = (req, res) => {
 		msg: `Healthy`,
 	});
 };
-
-// username, password, businessType, phone
 
 const registerBusiness = async (req, res) => {
 	try {
@@ -29,7 +25,7 @@ const registerBusiness = async (req, res) => {
       phone
 		);
     
-    if (!business.checkSanity()) {
+    if (!await business.checkSanity()) {
       throw new Error("Business is not valid");
     }
 		await addEntity("Business", business.username, business);
@@ -45,7 +41,7 @@ const registerBusiness = async (req, res) => {
 
 const getBusiness = async (req, res = response) => {
 	try {
-		const { name } = req.body;
+		const { name } = req.params;
 		const business = await getEntity("Business", name);
 		res.status(201).json({
 			...business,
@@ -71,7 +67,7 @@ const getAllBusiness = async (req, res) => {
 };
 
 const deleteBusiness = async (req, res = response) => {
-	// Add authentication
+	// TODO: Add authentication
   try {
 		const {name} = req.params;
 
@@ -100,20 +96,6 @@ const updateBusiness = async (req, res = response) => {
 	} catch (err) {
 		res.status(401).json({
 			msg: `Error updating business ${err}`,
-		});
-	}
-};
-
-const getOwnerProduct = async (req, res = response) => {
-	try {
-		const { owner_name } = req.query;
-		const owner_products = await getWithFilter("Product", "owner", owner_name);
-		res.status(201).json({
-			...owner_products,
-		});
-	} catch (err) {
-		res.status(401).json({
-			msg: `Error getting product ${err}`,
 		});
 	}
 };
