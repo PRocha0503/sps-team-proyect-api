@@ -1,6 +1,7 @@
 const {
 	getEntity,
 } = require("../database/config");
+const { User } = require("./user");
 
 /**
  * @class Business
@@ -13,13 +14,12 @@ class Business {
    * @constructor
    * @param {String} username 
    * @param {String} name
-   * @param {String} password 
    * @param {String} businessType
    * @param {String} phone 
    */
-	constructor(username, name, password, businessType, phone) {
+	constructor(username, name, businessType, phone) {
     this.username = username;
-		this.password = password;
+    this.name = name;
 		this.businessType = businessType;
     this.phone = phone;
     this.name = name;
@@ -48,7 +48,7 @@ class Business {
     ];
 
     // Data Sanitization
-    if (!(this.username && this.password && this.businessType && this.phone && this.name)) {
+    if (!(this.username && this.businessType && this.phone && this.name)) {
       throw new Error("Business is not valid");
     }
     if (this.username.length < 3 || this.username.length > 20) {
@@ -67,7 +67,7 @@ class Business {
     // Find if the business already exists, avoiding data duplicity
     const business = await getEntity("Business", this.username);
     if (business) {
-      throw new Error("Business already exists");
+      throw new Error("Username for business already exists");
     }
 
     return true;

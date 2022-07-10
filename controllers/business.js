@@ -15,7 +15,13 @@ const healthy = (req, res) => {
 
 const registerBusiness = async (req, res) => {
 	try {
-		const {name, username, password, businessType, phone} = req.body;
+		const {
+      name,
+      username,
+      password,
+      businessType,
+      phone
+    } = req.body;
 
     const business = new Business(
       username,
@@ -29,7 +35,8 @@ const registerBusiness = async (req, res) => {
       throw new Error("Business is not valid");
     }
 		await addEntity("Business", business.username, business);
-		res.status(201).json({
+		
+    res.status(201).json({
 			msg: `Business ${business.name} added successfully`,
 		});
 	} catch (err) {
@@ -41,7 +48,7 @@ const registerBusiness = async (req, res) => {
 
 const getBusiness = async (req, res = response) => {
 	try {
-		const { name } = req.params;
+		const {name} = req.params;
 		const business = await getEntity("Business", name);
 		res.status(201).json({
 			...business,
