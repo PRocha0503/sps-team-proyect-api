@@ -15,10 +15,10 @@ const { createJWT } = require("../helpers/createJWT");
 
 const login = async (req, res = response) => {
 	const { username, password } = req.body;
-	console.log(req.body);
 	try {
 		const user = await getEntity("User", username);
 		const userKey = getKey("User", username);
+		console.log(userKey);
 		const validPassword = bcryptjs.compareSync(password, user.password);
 		if (!validPassword) {
 			return res
@@ -26,7 +26,7 @@ const login = async (req, res = response) => {
 				.json({ msg: "Invalid User/Password --incorrect password" });
 		}
 		const token = await createJWT(userKey);
-		res.json({
+		return res.json({
 			token,
 		});
 	} catch (e) {
@@ -44,19 +44,24 @@ const getUserInfo = async (req, res = response) => {
 
 const signup = async (req, res = response) => {
 	const { username, password, type } = req.body;
-	const user = await getEntity("User", username);
-	if (user) {
-		return res.status(400).json({ msg: "User already exists" });
-	}
 	try {
+		const user = await getEntity("User", username);
+		if (user) {
+			return res.status(400).json({ msg: "User already exists" });
+		}
 		const encryptedPassword = bcryptjs.hashSync(password, 10);
 		const newUser = new User(username, encryptedPassword, type);
 		await addEntity("User", username, newUser);
-		const token = await createJWT(username);
-		return res
-			.status(201)
-			.json({ token, user: { ...newUser, password: null } });
+		console.log("HERE");
+		const userKey = getKey("User", username);
+		console.log(userKey);
+		const token = await createJWT(userKey);
+		console.log(token);
+		return res.json({
+			token,
+		});
 	} catch (err) {
+		console.log(err);
 		return res.status(500).json({
 			msg: `Error in signup: ${err}`,
 		});
