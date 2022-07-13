@@ -17,16 +17,15 @@ class Business {
    * @param {String} businessType
    * @param {String} phone 
    */
-	constructor(username, name, businessType, phone) {
+	constructor(username, name, businessType, phone, location, serviceHours, serviceArea) {
     this.username = username;
     this.name = name;
 		this.businessType = businessType;
     this.phone = phone;
-    this.name = name;
 
-    this.address = "";
-    this.location = {};
-    this.serviceHours = {};
+    this.serviceArea = serviceArea;
+    this.location = location;
+    this.serviceHours = serviceHours;
     this.is_deleted = false;
 	}
 

@@ -5,6 +5,8 @@ const {
 	getEntity,
 	updateEntity,
 	getWithFilter,
+	deleteEntity,
+	deleteAllEntities,
 } = require("../database/config");
 
 const healthy = (req, res) => {
@@ -18,17 +20,21 @@ const registerBusiness = async (req, res) => {
 		const {
       name,
       username,
-      password,
       businessType,
+			serviceArea,
+			servicesHours,
+			location,
       phone
     } = req.body;
 
     const business = new Business(
       username,
       name,
-      password,
       businessType,
-      phone
+      phone,
+			location,
+			servicesHours,
+			serviceArea,
 		);
     
     if (!await business.checkSanity()) {
@@ -78,9 +84,10 @@ const deleteBusiness = async (req, res = response) => {
   try {
 		const {name} = req.params;
 
-		await updateEntity("Business", name, {
+		await deleteEntity("Business", name);
+		/*await updateEntity("Business", name, {
       is_deleted: true,
-    });
+    });*/
 
 		res.status(201).json({
 			msg: `Product deleted successfully`,

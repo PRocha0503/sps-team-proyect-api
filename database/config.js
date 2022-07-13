@@ -90,6 +90,22 @@ async function deleteEntity(kind, id) {
 	}
 }
 
+async function deleteAllEntities(kind) {
+	try {
+		const query = datastore.createQuery(kind);
+		const [tasks] = await datastore.runQuery(query);
+
+		// Gets the current entity key 
+		const justTheKeys = tasks.map(function(res) {
+			return res[datastore.KEY];
+ 		});
+
+		await datastore.delete(justTheKeys);
+	} catch (err) {
+		throw err;
+	}
+}
+
 module.exports = {
 	getKey,
 	getEntity,
@@ -99,4 +115,5 @@ module.exports = {
 	getAllEntries,
 	updateEntity,
 	deleteEntity,
+	deleteAllEntities,
 };
