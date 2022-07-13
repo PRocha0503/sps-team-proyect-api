@@ -68,8 +68,25 @@ const signup = async (req, res = response) => {
 	}
 };
 
+const isBusiness = async (req, res = response) => {
+	const user = req.user;
+	try {
+		const business = await getEntity("Business", user.username);
+		if (!business || Object.keys(business).length === 0) {
+			throw new Error("User is not a business");
+		}
+		return res.status(200).json({ ...business });
+	} catch (err) {
+		console.log(err);
+		return res.status(400).json({
+			msg: `${err}`,
+		});
+	}
+};
+
 module.exports = {
 	login,
 	signup,
 	getUserInfo,
+	isBusiness,
 };
