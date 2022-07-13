@@ -69,11 +69,9 @@ const signup = async (req, res = response) => {
 };
 
 const isBusiness = async (req, res = response) => {
-	console.log("HERE");
 	const user = req.user;
-	console.log(user);
 	try {
-		const business = getEntity("Business", user.username);
+		const business = await getEntity("Business", user.username);
 		if (!business || Object.keys(business).length === 0) {
 			throw new Error("User is not a business");
 		}
