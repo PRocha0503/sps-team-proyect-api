@@ -10,7 +10,7 @@ const {
 	deleteAllEntities,
 } = require("../database/config");
 const {
-	GeoCoder,
+	getTravelInformation,
 } = require('../helpers/getDistance');
 //} = require("@google/maps");
 
@@ -121,24 +121,26 @@ const updateBusiness = async (req, res = response) => {
 
 const getNearestBusiness = async (req, res) => {
 	try {
-		//const { lat, lng, serviceArea } = req.body;
-		//const business = await getAllEntries("Business");
+		const { lat, lng, serviceArea } = req.body;
+		const allBusiness = await getWithFilter("Business", "is_deleted", false);
 
-		/*const nearestBusiness = business.reduce((acc, curr) => {
-			const distance = 
-			if (distance < acc.distance) {
-				acc.distance = distance;
-				acc.business = curr;
-			}
-			return acc;
-		}, { distance: Infinity, business: {} });*/
+	
+		const nearestBusiness = allBusiness.map(async business => {
+			const businessLat = business.location.lat;
+			const businessLng = business.location.lng;
 
-		const geocoder = new GeoCoder( { lat: 55.93, lng: -3.118 }, { lat: 55.087, lng: -4.421 })
+			return {
+				distance: await getTravelInformation({ lat: 28.655165, lng: -106.073030 }, {lat: businessLat, lng: businessLng}),
+				...business
+			};
+			
+		});
 
-		console.log(await geocoder.getDistance());
+		const nearestBusinesses = await Promise.all(nearestBusiness);
 
 		res.status(200).json({
 			msg: 'Business found successfully',
+			...nearestBusinesses,
 		});
 	} catch (err) {
 		res.status(401).json({
