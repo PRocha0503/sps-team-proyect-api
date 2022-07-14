@@ -6,11 +6,13 @@ const {
 	deleteBusiness,
 	getBusiness,
 	updateBusiness,
+	getNearestBusiness,
 } = require("../controllers/business");
 const { validateJWT } = require("../middlewares/validateJWT");
 
 const router = Router();
 
+router.get('/nearest', getNearestBusiness); // TODO: Add JWT validation
 router.get("/healthy", healthy);
 router.get('/', getAllBusiness);
 router.post('/', registerBusiness);
