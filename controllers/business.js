@@ -121,22 +121,34 @@ const updateBusiness = async (req, res = response) => {
 
 const getNearestBusiness = async (req, res) => {
 	try {
-		const { lat, lng, serviceArea } = req.body;
-		const allBusiness = await getWithFilter("Business", "is_deleted", false);
+		const params = req.query;
+		console.log('params', params);
+		const lat = parseFloat(params.lat);
+		const lng = parseFloat(params.lng);
 
-	
+		console.log('user',{lat, lng});
+
+		const allBusiness = await getWithFilter("Business", "is_deleted", false);
+		
 		const nearestBusiness = allBusiness.map(async business => {
 			const businessLat = business.location.lat;
 			const businessLng = business.location.lng;
-
+			// { lat: 19.371116557823594, lng: -99.23642932374267 }
 			return {
-				distance: await getTravelInformation({ lat: 28.655165, lng: -106.073030 }, {lat: businessLat, lng: businessLng}),
+				distance: await getTravelInformation({
+					lat: parseFloat(lat),
+					lng: parseFloat(lng),
+				}, 
+				{
+					lat: businessLat,
+					lng: businessLng
+				}),
 				...business
 			};
 			
 		});
 
-		const nearestBusinesses = await Promise.all(nearestBusiness);
+		const nearestBusinesses = await (await Promise.all(nearestBusiness)).filter(business => business.distance.value <= business.serviceArea).sort((a, b) => a.distance.value - b.distance.value);
 
 		res.status(200).json({
 			msg: 'Business found successfully',
