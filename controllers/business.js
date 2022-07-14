@@ -6,8 +6,13 @@ const {
 	updateEntity,
 	getWithFilter,
 	deleteEntity,
+	getAllEntries,
 	deleteAllEntities,
 } = require("../database/config");
+const {
+	GeoCoder,
+} = require('../helpers/getDistance');
+//} = require("@google/maps");
 
 const healthy = (req, res) => {
 	res.status(200).json({
@@ -114,6 +119,34 @@ const updateBusiness = async (req, res = response) => {
 	}
 };
 
+const getNearestBusiness = async (req, res) => {
+	try {
+		//const { lat, lng, serviceArea } = req.body;
+		//const business = await getAllEntries("Business");
+
+		/*const nearestBusiness = business.reduce((acc, curr) => {
+			const distance = 
+			if (distance < acc.distance) {
+				acc.distance = distance;
+				acc.business = curr;
+			}
+			return acc;
+		}, { distance: Infinity, business: {} });*/
+
+		const geocoder = new GeoCoder( { lat: 55.93, lng: -3.118 }, { lat: 55.087, lng: -4.421 })
+
+		console.log(await geocoder.getDistance());
+
+		res.status(200).json({
+			msg: 'Business found successfully',
+		});
+	} catch (err) {
+		res.status(401).json({
+			msg: `Error getting business ${err}`,
+		});
+	}
+}
+
 module.exports = {
 	healthy,
   getAllBusiness,
@@ -121,4 +154,5 @@ module.exports = {
   deleteBusiness,
   getBusiness,
   updateBusiness,
+	getNearestBusiness,
 };
