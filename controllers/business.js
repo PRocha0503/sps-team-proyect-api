@@ -9,9 +9,7 @@ const {
 	getAllEntries,
 	deleteAllEntities,
 } = require("../database/config");
-const {
-	getTravelInformation,
-} = require('../helpers/getDistance');
+const { getTravelInformation } = require("../helpers/getDistance");
 //} = require("@google/maps");
 
 const healthy = (req, res) => {
@@ -23,31 +21,31 @@ const healthy = (req, res) => {
 const registerBusiness = async (req, res) => {
 	try {
 		const {
-      name,
-      username,
-      businessType,
+			name,
+			username,
+			businessType,
 			serviceArea,
 			servicesHours,
 			location,
-      phone
-    } = req.body;
+			phone,
+		} = req.body;
 
-    const business = new Business(
-      username,
-      name,
-      businessType,
-      phone,
+		const business = new Business(
+			username,
+			name,
+			businessType,
+			phone,
 			location,
 			servicesHours,
-			serviceArea,
+			serviceArea
 		);
-    
-    if (!await business.checkSanity()) {
-      throw new Error("Business is not valid");
-    }
+
+		if (!(await business.checkSanity())) {
+			throw new Error("Business is not valid");
+		}
 		await addEntity("Business", business.username, business);
-		
-    res.status(201).json({
+
+		res.status(201).json({
 			msg: `Business ${business.name} added successfully`,
 		});
 	} catch (err) {
@@ -59,7 +57,7 @@ const registerBusiness = async (req, res) => {
 
 const getBusiness = async (req, res = response) => {
 	try {
-		const {name} = req.params;
+		const { name } = req.params;
 		const business = await getEntity("Business", name);
 		res.status(201).json({
 			...business,
@@ -86,8 +84,8 @@ const getAllBusiness = async (req, res) => {
 
 const deleteBusiness = async (req, res = response) => {
 	// TODO: Add authentication
-  try {
-		const {name} = req.params;
+	try {
+		const { name } = req.params;
 
 		await deleteEntity("Business", name);
 		/*await updateEntity("Business", name, {
@@ -122,57 +120,58 @@ const updateBusiness = async (req, res = response) => {
 const getNearestBusiness = async (req, res) => {
 	try {
 		const params = req.query;
-		console.log('params', params);
+
 		const lat = parseFloat(params.lat);
 		const lng = parseFloat(params.lng);
-
-		console.log('user',{lat, lng});
+		if (!lat || !lng) {
+			console.log("INCORRECt");
+			throw new Error("Incorrect parameters");
+		}
+		console.log("user", { lat, lng });
 
 		const allBusiness = await getWithFilter("Business", "is_deleted", false);
-		
-		const nearestBusiness = allBusiness.map(async business => {
+		const nearestBusiness = allBusiness.map(async (business) => {
 			const businessLat = business.location.lat;
 			const businessLng = business.location.lng;
 			// { lat: 19.371116557823594, lng: -99.23642932374267 }
 			return {
-				distance: await getTravelInformation({
-					lat: parseFloat(lat),
-					lng: parseFloat(lng),
-				}, 
-				{
-					lat: businessLat,
-					lng: businessLng
-				}),
-				...business
+				distance: await getTravelInformation(
+					{
+						lat: parseFloat(lat),
+						lng: parseFloat(lng),
+					},
+					{
+						lat: businessLat,
+						lng: businessLng,
+					}
+				),
+				...business,
 			};
-			
 		});
 
-		const nearestBusinesses = await (
-			await Promise.all(nearestBusiness))
-			.filter(business => 
-				business.distance.value <= business.serviceArea
-			)
-			.sort((a, b) => 
-				a.distance.value - b.distance.value);
-
+		const nearestBusinesses = (await Promise.all(nearestBusiness))
+			.filter((business) => business.distance.value <= business.serviceArea)
+			.sort((a, b) => a.distance.value - b.distance.value)
+			.map((near) => {
+				return near.username;
+			});
+		console.log("NEAR", nearestBusinesses);
 		res.status(200).json({
-			msg: 'Business found successfully',
-			...nearestBusinesses,
+			near: nearestBusinesses,
 		});
 	} catch (err) {
 		res.status(401).json({
 			msg: `Error getting business ${err}`,
 		});
 	}
-}
+};
 
 module.exports = {
 	healthy,
-  getAllBusiness,
-  registerBusiness,
-  deleteBusiness,
-  getBusiness,
-  updateBusiness,
+	getAllBusiness,
+	registerBusiness,
+	deleteBusiness,
+	getBusiness,
+	updateBusiness,
 	getNearestBusiness,
 };
