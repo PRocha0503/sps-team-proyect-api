@@ -43,7 +43,6 @@ const getMappedOrder = async (req, res = response) => {
 			const product = await getEntity("Product", order.product.name);
       
       const user = await getWithFilter("User", "username", order.user.name);
-      console.log(user[0]);
 
       if (user !== undefined && user[0] !== undefined && user[0].type === 'customer') {
         const customer = await getEntity("Customer", "c" + user[0].username);
