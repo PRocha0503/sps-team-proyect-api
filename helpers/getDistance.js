@@ -29,7 +29,7 @@ const getTravelInformation = async (businessLocation, userLocation) => {
         }
       }
     ).then(response => {
-      console.log(response.data.rows[0].elements[0].distance);
+      // console.log(response.data.rows[0].elements[0].distance);
       return response.data.rows[0].elements[0].distance; // { text: '164 km', value: 164060 }
     }
     ).catch(err => {

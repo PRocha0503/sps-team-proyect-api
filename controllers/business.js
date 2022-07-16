@@ -148,7 +148,13 @@ const getNearestBusiness = async (req, res) => {
 			
 		});
 
-		const nearestBusinesses = await (await Promise.all(nearestBusiness)).filter(business => business.distance.value <= business.serviceArea).sort((a, b) => a.distance.value - b.distance.value);
+		const nearestBusinesses = await (
+			await Promise.all(nearestBusiness))
+			.filter(business => 
+				business.distance.value <= business.serviceArea
+			)
+			.sort((a, b) => 
+				a.distance.value - b.distance.value);
 
 		res.status(200).json({
 			msg: 'Business found successfully',

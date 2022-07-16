@@ -15,7 +15,7 @@ class Server {
 
 			customerPath: "/api/customers",
 			businessPath: '/api/business',
-
+			analyticsPath: '/api/analytics',
 		};
 		//Middleware
 		this.middlewares();
@@ -35,7 +35,7 @@ class Server {
 		this.app.use(this.paths.authPath, require("../routes/auth"));
 		this.app.use(this.paths.customerPath, require("../routes/customer"));
 		this.app.use(this.paths.businessPath, require('../routes/business'));
-
+		this.app.use(this.paths.analyticsPath, require('../routes/analytics'));
 	}
 
 	listen() {

@@ -106,6 +106,14 @@ async function deleteAllEntities(kind) {
 	}
 }
 
+async function getEntitiesGrouped(kind, groups) {
+	const query = datastore.createQuery(kind);
+	const groupedQuery = query.groupBy(groups);
+	const [tasks] = await datastore.runQuery(groupedQuery);
+
+	return tasks;
+}
+
 module.exports = {
 	getKey,
 	getEntity,
@@ -116,4 +124,5 @@ module.exports = {
 	updateEntity,
 	deleteEntity,
 	deleteAllEntities,
+	getEntitiesGrouped,
 };
